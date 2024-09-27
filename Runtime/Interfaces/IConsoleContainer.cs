@@ -4,6 +4,9 @@ namespace romanlee17.ConsoleContainerRuntime {
     /// messages or error messages inside dedicated container.</summary>
     public interface IConsoleContainer {
 
+        /// <summary>Name of the container.</summary>
+        public string Name { get; }
+
         /// <summary>Creates a text message inside the dedicated container.</summary>
         /// <param name="source">The source object of the text message.</param>
         /// <param name="message">The text message related to the source.</param>
