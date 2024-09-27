@@ -1,0 +1,18 @@
+{
+    "name": "romanlee17.ConsoleContainerEditor",
+    "rootNamespace": "romanlee17.ConsoleContainerEditor",
+    "references": [
+        "romanlee17.ConsoleContainerRuntime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
