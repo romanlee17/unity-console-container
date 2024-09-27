@@ -3,7 +3,11 @@ guid: 724c225c23371a141abd50b25b7d4142
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - consoleContainerIconDark: {fileID: 2800000, guid: d5af5562ae006d04287ac28dc8d8d363, type: 3}
+  - consoleContainerIconLight: {fileID: 2800000, guid: cda3fa09e8e3c6c44a1431b742e41dd8, type: 3}
+  - consoleContainerUXML: {fileID: 9197481963319205126, guid: e3417da3abc43664993894c3068011ed, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
