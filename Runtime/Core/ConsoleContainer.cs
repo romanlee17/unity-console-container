@@ -1,22 +1,27 @@
+using System.Collections.Generic;
+
 namespace romanlee17.ConsoleContainerRuntime {
 
     public class ConsoleContainer : IConsoleContainer {
 
-        public static IConsoleContainer Create() {
-            return new ConsoleContainer();
+        public static IConsoleContainer Create(string name) {
+            return new ConsoleContainer(name);
         }
 
         // Prevent external instantiation.
-        private ConsoleContainer() {
-
+        private ConsoleContainer(string name) {
+            this.name = name;
         }
 
-        public void CreateMessage(object source, string message) {
+        internal readonly string name;
+        internal static readonly Dictionary<IConsoleContainer, string[]> containers = new();
+
+        public void CreateText(object source, string message) {
             string typeName = source.GetType().Name;
-            CreateMessage(typeName, message);
+            CreateText(typeName, message);
         }
 
-        public void CreateMessage(string source, string message) {
+        public void CreateText(string source, string message) {
 
         }
 
