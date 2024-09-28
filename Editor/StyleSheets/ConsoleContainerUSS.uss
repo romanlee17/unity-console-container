@@ -164,43 +164,46 @@
 }
 
 .message-text {
-    padding-top: 8px;
-    padding-right: 8px;
-    padding-bottom: 8px;
-    padding-left: 8px;
+    padding-top: 4px;
+    padding-right: 10px;
+    padding-bottom: 4px;
+    padding-left: 10px;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
     white-space: normal;
     -unity-text-align: upper-left;
-    color: rgba(255, 255, 255, 255);
+    color: rgb(255, 255, 255);
+    font-size: 14px;
 }
 
 .message-warning {
-    padding-top: 8px;
-    padding-right: 8px;
-    padding-bottom: 8px;
-    padding-left: 8px;
+    padding-top: 4px;
+    padding-right: 10px;
+    padding-bottom: 4px;
+    padding-left: 10px;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
     white-space: normal;
     -unity-text-align: upper-left;
-    color: rgba(255, 211, 0, 255);
+    color: rgb(255, 233, 128);
+    font-size: 14px;
 }
 
 .message-error {
-    padding-top: 8px;
-    padding-right: 8px;
-    padding-bottom: 8px;
-    padding-left: 8px;
+    padding-top: 4px;
+    padding-right: 10px;
+    padding-bottom: 4px;
+    padding-left: 10px;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
     white-space: normal;
     -unity-text-align: upper-left;
-    color: rgb(255, 0, 0);
+    color: rgb(255, 128, 128);
+    font-size: 14px;
 }

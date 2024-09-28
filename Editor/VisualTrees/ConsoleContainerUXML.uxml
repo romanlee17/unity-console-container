@@ -6,7 +6,7 @@
         </ui:VisualElement>
         <ui:DropdownField choices="EventAggregator" name="dropdown" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; flex-shrink: 0; flex-grow: 0; width: 200px; align-self: flex-end; display: flex; height: 100%;" />
     </ui:VisualElement>
-    <ui:ScrollView class="scroll-view-content">
+    <ui:ScrollView vertical-scroller-visibility="AlwaysVisible" class="scroll-view-content">
         <ui:VisualElement name="content" class="content-root" />
     </ui:ScrollView>
 </ui:UXML>
