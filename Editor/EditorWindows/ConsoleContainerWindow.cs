@@ -1,97 +1,109 @@
 namespace romanlee17.ConsoleContainerEditor {
     using romanlee17.ConsoleContainerRuntime;
-    using System.Collections.Generic;
     using System.Linq;
     using UnityEditor;
     using UnityEngine;
     using UnityEngine.UIElements;
+    using MessageType = ConsoleContainerRuntime.MessageType;
 
     internal class ConsoleContainerWindow : EditorWindow {
 
-        [SerializeField] private Texture2D consoleContainerIconDark;
-        [SerializeField] private Texture2D consoleContainerIconLight;
+        [SerializeField] private Texture2D windowDarkIcon;
+        [SerializeField] private Texture2D windowLightIcon;
         [SerializeField] private VisualTreeAsset consoleContainerUXML;
 
         [MenuItem("romanlee17/Console Container Window")]
         public static void OpenWindow() {
-            // Get existing open window or if none, make a new one.
             ConsoleContainerWindow window = CreateWindow<ConsoleContainerWindow>();
-            window.minSize = new Vector2(600, 400);
+            window.titleContent.text = "Console Container";
+            window.titleContent.image = EditorGUIUtility.isProSkin ? window.windowLightIcon : window.windowDarkIcon;
+            window.Show();
+        }
+        private void RefreshDropdownChoices() {
+            if (consoleContainerDropdown == null) {
+                return;
+            }
+            consoleContainerDropdown.choices = ConsoleContainer.containers.Keys.Select(x => x.name).ToList();
         }
 
-        // Runtime fields.
+        private void DisplayConsoleMessage(ConsoleMessage consoleMessage) {
+            Label label = new(consoleMessage.ToString());
+            label.AddToClassList(consoleMessage.type switch {
+                MessageType.Text => "message-text",
+                MessageType.Warning => "message-warning",
+                MessageType.Error => "message-error",
+                _ => "message-text"
+            });
+            consoleContainerContent.Add(label);
+        }
 
-        private VisualElement contentRoot = null;
-        private DropdownField instanceDropdown = null;
+        private void SelectConsoleContainer(string key) {
+            // Check if the key is null or empty.
+            if (string.IsNullOrEmpty(key) == true) {
+                return;
+            }
+            // Check if the selected console container exists.
+            if (ConsoleContainer.containers.Keys.Any(x => x.name == selectedConsoleContainerKey) == false) {
+                return;
+            }
+            // Unsubscribe from the previous console container messages.
+            if (consoleContainer != null) {
+                consoleContainer.OnConsoleMessage -= DisplayConsoleMessage;
+            }
+            // Clear the console container content.
+            consoleContainerContent.Clear();
+            // Select the new console container.
+            consoleContainer = ConsoleContainer.containers.Keys.First(x => x.name == key);
+            selectedConsoleContainerKey = key;
+            // Add all console messages to the console container content.
+            foreach (ConsoleMessage consoleMessage in ConsoleContainer.containers[consoleContainer]) {
+                DisplayConsoleMessage(consoleMessage);
+            }
+            // Subscribe to the new console container messages.
+            consoleContainer.OnConsoleMessage += DisplayConsoleMessage;
+        }
+
+        private string selectedConsoleContainerKey = null;
         private ConsoleContainer consoleContainer = null;
 
+        // Visual elements.
+        private VisualElement consoleContainerContent = null;
+        private DropdownField consoleContainerDropdown = null;
+
         private void OnEnable() {
-            ConsoleContainer.OnConsoleCreated += OnConsoleCreated;
+            ConsoleContainer.OnConstructorEvent += RefreshDropdownChoices;
+            SelectConsoleContainer(selectedConsoleContainerKey);
         }
 
         private void OnDisable() {
-            ConsoleContainer.OnConsoleCreated -= OnConsoleCreated;
-        }
-
-        private void OnConsoleCreated() {
-            if (instanceDropdown == null) {
-                return;
-            }
-            // Refresh instance dropdown.
-            instanceDropdown.choices = ConsoleContainer.containers.Keys.Select(x => x.name).ToList();
-        }
-
-        private void OnConsoleMessage(ConsoleMessage consoleMessage) {
-            // Add message to content root.
-
-        }
-
-        private void OnDropdownInstanceChange(string value) {
+            ConsoleContainer.OnConstructorEvent -= RefreshDropdownChoices;
             if (consoleContainer != null) {
-                // Unsubscribe from previous instance.
-                consoleContainer.OnConsoleMessage -= OnConsoleMessage;
-            }
-            // Clear console from previous messages.
-            contentRoot.Clear();
-            // Get messages from selected instance.
-            consoleContainer = ConsoleContainer.containers.Keys.First(x => x.name == value);
-            MessageCollection messageCollection = ConsoleContainer.containers[consoleContainer];
-            // Add messages to content root.
-            foreach (ConsoleMessage consoleMessage in messageCollection) {
-
+                consoleContainer.OnConsoleMessage -= DisplayConsoleMessage;
             }
         }
 
-        public void CreateGUI() {
-
-            titleContent.text = "Console Container";
-            titleContent.image = EditorGUIUtility.isProSkin ? consoleContainerIconLight : consoleContainerIconDark;
-
-            // Create a window root visual element.
-            VisualElement windowRoot = consoleContainerUXML.Instantiate();
-            windowRoot.style.flexGrow = 1;
-
-            // Get content root from window root.
-            contentRoot = windowRoot.Q<VisualElement>("content-root");
-
+        private void CreateGUI() {
+            VisualElement consoleContainerTree = consoleContainerUXML.CloneTree();
+            consoleContainerTree.style.flexGrow = 1;
+            consoleContainerContent = consoleContainerTree.Q<VisualElement>("content");
+            // Dropdown field.
+            consoleContainerDropdown = consoleContainerTree.Q<DropdownField>("dropdown");
+            consoleContainerDropdown.RegisterValueChangedCallback(callback => {
+                consoleContainerDropdown.value = callback.newValue;
+                SelectConsoleContainer(callback.newValue);
+            });
+            RefreshDropdownChoices();
             // Clear button.
-            VisualElement clearButton = windowRoot.Q<VisualElement>("clear-button");
+            VisualElement clearButton = consoleContainerTree.Q<VisualElement>("clear-button");
             clearButton.RegisterCallback<ClickEvent>(clickEvent => {
-                contentRoot.Clear();
+                consoleContainerContent.Clear();
+                if (consoleContainer != null) {
+                    // Assuming that console container always has own message collection.
+                    ConsoleContainer.containers[consoleContainer].Clear();
+                }
             });
-
-            // Instance dropdown.
-            instanceDropdown = windowRoot.Q<DropdownField>("instance-dropdown");
-            instanceDropdown.choices = ConsoleContainer.containers.Keys.Select(x => x.name).ToList();
-            instanceDropdown.RegisterValueChangedCallback<string>(value => {
-                OnDropdownInstanceChange(value.newValue);
-            });
-
-            // Add window root to root visual element.
-            rootVisualElement.Add(windowRoot);
-
+            rootVisualElement.Add(consoleContainerTree);
         }
-
 
     }
 

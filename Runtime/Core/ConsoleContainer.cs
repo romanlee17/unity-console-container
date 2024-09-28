@@ -17,12 +17,12 @@ namespace romanlee17.ConsoleContainerRuntime {
         private ConsoleContainer(string name) {
             this.name = string.IsNullOrEmpty(name) ? $"Console [{containers.Count}]" : name;
             containers.Add(this, new());
-            OnConsoleCreated?.Invoke();
+            OnConstructorEvent?.Invoke();
         }
 
         // Editor runtime fields.
         internal readonly string name;
-        internal static event Action OnConsoleCreated;
+        internal static event Action OnConstructorEvent;
         internal event Action<ConsoleMessage> OnConsoleMessage;
         internal static readonly Dictionary<ConsoleContainer, MessageCollection> containers = new();
 
