@@ -63,6 +63,16 @@ namespace romanlee17.ConsoleContainerEditor {
             });
             RefreshDropdownChoices();
 
+            // Clear console container content.
+            VisualElement clearButton = consoleContainerTree.Q<VisualElement>("clear-button");
+            clearButton.RegisterCallback<ClickEvent>(clickEvent => {
+                consoleContainerContent.Clear();
+                if (consoleContainer != null) {
+                    // Assuming that console container always has own message collection.
+                    ConsoleContainer.containers[consoleContainer].Clear();
+                }
+            });
+
             // Try to select last console container chosen.
             SelectConsoleContainer(CurrentDropdownChoice);
 
