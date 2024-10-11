@@ -34,6 +34,9 @@ namespace romanlee17.ConsoleContainerRuntime {
         /// <param name="message">The error message related to the source.</param>
         public void CreateError(string source, string message);
 
+        /// <summary>Clear all messages in container and dispose it.</summary>
+        public void Dispose();
+
     }
 
 }

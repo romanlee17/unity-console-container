@@ -3,7 +3,7 @@ namespace romanlee17.ConsoleContainerRuntime {
     using System.Collections.Generic;
     using System.Linq;
 
-    public class ConsoleContainer : IConsoleContainer {
+    public class ConsoleContainer : IConsoleContainer, IDisposable {
 
         public static IConsoleContainer Create(string name = default) {
             if (containers.Any(x => x.Key.name == name)) {
@@ -61,6 +61,29 @@ namespace romanlee17.ConsoleContainerRuntime {
         public void CreateError(string source, string message) {
             CreateConsoleMessage(source, message, MessageType.Error);
         }
+
+        #region IDisposable
+
+        ~ConsoleContainer() {
+            Dispose(false);
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            if (disposing == true) {
+                // Release managed resources.
+                containers[this].Clear();
+                containers.Remove(this);
+                OnConsoleMessage = null;
+            }
+            // Release unmanaged resources.
+        }
+
+        #endregion
 
     }
 
